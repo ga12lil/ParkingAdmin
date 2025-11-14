@@ -1,0 +1,45 @@
+-- Database schema for parking system
+
+
+CREATE TABLE IF NOT EXISTS owners (
+id SERIAL PRIMARY KEY,
+first_name VARCHAR(100) NOT NULL,
+last_name VARCHAR(100) NOT NULL,
+phone VARCHAR(50),
+email VARCHAR(255)
+);
+
+
+CREATE TABLE IF NOT EXISTS cars (
+id SERIAL PRIMARY KEY,
+owner_id INTEGER NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
+license_plate VARCHAR(20) NOT NULL UNIQUE,
+make VARCHAR(50),
+model VARCHAR(50),
+color VARCHAR(30)
+);
+
+
+CREATE TABLE IF NOT EXISTS parking_spots (
+id SERIAL PRIMARY KEY,
+spot_number VARCHAR(50) NOT NULL UNIQUE,
+level INTEGER DEFAULT 0,
+is_available BOOLEAN DEFAULT TRUE
+);
+
+
+CREATE TABLE IF NOT EXISTS reservations (
+id SERIAL PRIMARY KEY,
+spot_id INTEGER NOT NULL REFERENCES parking_spots(id) ON DELETE CASCADE,
+car_id INTEGER NOT NULL REFERENCES cars(id) ON DELETE CASCADE,
+owner_id INTEGER NOT NULL REFERENCES owners(id) ON DELETE CASCADE,
+start_time TIMESTAMP WITHOUT TIME ZONE DEFAULT now(),
+end_time TIMESTAMP WITHOUT TIME ZONE,
+paid BOOLEAN DEFAULT FALSE
+);
+
+
+-- Indexes
+CREATE INDEX IF NOT EXISTS idx_car_license ON cars(license_plate);
+CREATE INDEX IF NOT EXISTS idx_owner_name ON owners(last_name, first_name);
+CREATE INDEX IF NOT EXISTS idx_reservation_car ON reservations(car_id);
