@@ -53,4 +53,10 @@ public class SpotRepository {
     public void delete(int id) {
         jdbc.update("delete from parking_spots where id = ?", id);
     }
+
+    public boolean isSpotFree(int spotId) {
+        String sql = "SELECT COUNT(*) FROM reservations WHERE spot_id = ? AND paid = false";
+        Integer count = jdbc.queryForObject(sql, Integer.class, spotId);
+        return count != null && count == 0;
+    }
 }

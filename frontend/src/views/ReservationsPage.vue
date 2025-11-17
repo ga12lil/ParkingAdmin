@@ -24,16 +24,15 @@
     <el-dialog v-model="dialog" title="Бронь">
       <el-form :model="form">
         <el-form-item label="Авто">
-          <el-select v-model="form.carId" placeholder="Выберите авто">
+          <el-select v-model="form.carId"  @change="onCarChange" placeholder="Выберите авто">
             <el-option v-for="c in cars" :key="c.id" :label="c.licensePlate" :value="c.id" />
           </el-select>
         </el-form-item>
 
         <el-form-item label="Владелец">
-          <el-select v-model="form.ownerId" placeholder="Выберите владельца">
-            <el-option v-for="o in owners" :key="o.id" :label="o.firstName + ' ' + o.lastName" :value="o.id" />
-          </el-select>
+          <el-input v-model="selectedOwnerName" disabled />
         </el-form-item>
+
 
         <el-form-item label="Место">
           <el-select v-model="form.spotId" placeholder="Выберите место">
@@ -77,6 +76,24 @@ function edit(row: any) { isEdit.value = true; form.value = { ...row }; dialog.v
 async function save() { if (isEdit.value && form.value.id) await store.update(form.value.id, form.value); else await store.add(form.value); dialog.value = false }
 async function remove(id: number) { await store.remove(id) }
 async function pay(id: number) { await store.pay(id) }
+
+const selectedOwnerName = ref('');
+
+// при выборе машины:
+function onCarChange(carId: number) {
+  const car = carsStore.cars.find(c => c.id === carId);
+  if (!car) {
+    form.value.ownerId = null;
+    selectedOwnerName.value = '';
+    return;
+  }
+
+  const owner = ownersStore.owners.find(o => o.id === car.ownerId);
+  if (owner) {
+    form.value.ownerId = owner.id;
+    selectedOwnerName.value = owner.firstName + ' '+ owner.lastName;
+  }
+}
 
 const cars = carsStore.cars
 const spots = spotsStore.spots
