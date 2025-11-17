@@ -2,6 +2,7 @@ package com.ga12lil.ParkingAdmin.controller;
 
 import com.ga12lil.ParkingAdmin.model.Car;
 import com.ga12lil.ParkingAdmin.repository.CarRepository;
+import com.ga12lil.ParkingAdmin.service.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,33 +13,35 @@ import java.util.List;
 @RequestMapping("/api/cars")
 @RequiredArgsConstructor
 public class CarController {
-    private final CarRepository repo;
+    private final CarService carService;
 
     @GetMapping
-    public List<Car> all() { return repo.findAll(); }
+    public List<Car> all() {
+        return carService.getAll();
+    }
 
     @GetMapping("/search")
-    public List<Car> search(@RequestParam("q") String q) { return repo.findByLicenseLike(q); }
+    public List<Car> search(@RequestParam("q") String q) {
+        return carService.search(q);
+    }
 
     @GetMapping("/{id}")
-    public Car get(@PathVariable int id) { return repo.findById(id); }
+    public Car get(@PathVariable int id) {
+        return carService.getById(id);
+    }
 
     @PostMapping
     public ResponseEntity<Integer> create(@RequestBody Car car) {
-        int id = repo.create(car);
-        return ResponseEntity.ok(id);
+        return carService.create(car);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Car car) {
-        car.setId(id);
-        repo.update(car);
-        return ResponseEntity.ok().build();
+        return carService.update(id, car);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        repo.delete(id);
-        return ResponseEntity.ok().build();
+        return carService.delete(id);
     }
 }

@@ -1,7 +1,7 @@
 package com.ga12lil.ParkingAdmin.controller;
 
 import com.ga12lil.ParkingAdmin.model.Owner;
-import com.ga12lil.ParkingAdmin.repository.OwnerRepository;
+import com.ga12lil.ParkingAdmin.service.OwnerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,36 +12,38 @@ import java.util.List;
 @RequestMapping("/api/owners")
 @RequiredArgsConstructor
 public class OwnerController {
-    private final OwnerRepository repo;
+    private final OwnerService ownerService;
 
     @GetMapping
-    public List<Owner> all() { return repo.findAll(); }
+    public List<Owner> all() {
+        return ownerService.getAll();
+    }
 
     @GetMapping("/search")
-    public List<Owner> search(@RequestParam("q") String q) { return repo.findByName(q); }
+    public List<Owner> search(@RequestParam("q") String q) {
+        return ownerService.search(q);
+    }
 
     @GetMapping("/{id}")
-    public Owner get(@PathVariable int id) { return repo.findById(id); }
+    public Owner get(@PathVariable int id) {
+        return ownerService.getById(id);
+    }
 
 
     @PostMapping
     public ResponseEntity<Integer> create(@RequestBody Owner owner) {
-        int id = repo.create(owner);
-        return ResponseEntity.ok(id);
+        return ownerService.create(owner);
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(@PathVariable int id, @RequestBody Owner owner) {
-        owner.setId(id);
-        repo.update(owner);
-        return ResponseEntity.ok().build();
+        return ownerService.update(id, owner);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable int id) {
-        repo.delete(id);
-        return ResponseEntity.ok().build();
+        return ownerService.delete(id);
     }
 }
