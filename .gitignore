@@ -4,6 +4,8 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 /postgres-data/
+/frontend/node_modules/
+/frontend/package-lock.json
 
 ### STS ###
 .apt_generated
