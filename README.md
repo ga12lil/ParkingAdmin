@@ -1,3 +1,10 @@
+# Стек:
+* Java + Spring Boot + Maven
+* Vue 3 + TypeScript + Vite + Pinia + Element Plus
+* PostgreSQL
+* Docker
+
+
 # Инструкция:
 ### backend
 ### 1. Запустить базу данных:
